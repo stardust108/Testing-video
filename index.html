@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Scroll and Preloader</title>
   <style>
-    /* General Styles */
     body, html {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      overflow: hidden; /* Avoid scrolling during loading */
     }
 
     /* Preloader Styles */
@@ -34,9 +32,9 @@
       margin-top: 10px;
     }
 
-    /* Page Content Styles */
+    /* Content Styles */
     #content {
-      display: none; /* Hidden until fully loaded */
+      display: none;
     }
 
     .section {
@@ -59,7 +57,7 @@
       height: auto;
       display: block;
       object-fit: cover;
-      pointer-events: none; /* Disable interaction */
+      pointer-events: none;
     }
   </style>
 </head>
@@ -69,7 +67,7 @@
     <div>Loading... <span id="percentage">0%</span></div>
   </div>
 
-  <!-- Page Content -->
+  <!-- Content -->
   <div id="content">
     <div class="section">Welcome to My Website</div>
     <div class="section">Scroll Down for Video</div>
@@ -90,19 +88,22 @@
 
     let loadProgress = 0;
 
+    document.body.style.overflowY = 'hidden'; // Prevent vertical scrolling during loading
+
     const fakeLoader = setInterval(() => {
-      loadProgress += 5; // Simulate loading progress
+      loadProgress += 5;
       percentage.textContent = `${loadProgress}%`;
       if (loadProgress >= 100) {
         clearInterval(fakeLoader);
         preloader.style.display = 'none';
         content.style.display = 'block';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        document.body.style.overflowY = 'auto'; // Re-enable scrolling
       }
     }, 100);
 
     // Scroll-triggered Video Play
     const video = document.getElementById('myVideo');
+    video.muted = true; // Ensure the video is muted
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -111,7 +112,7 @@
           video.pause();
         }
       });
-    }, { threshold: 0.5 }); // Trigger when 50% of video is visible
+    }, { threshold: 0.5 });
 
     observer.observe(video);
   </script>
