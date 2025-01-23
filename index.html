@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Scroll and Preloader</title>
+  <style>
+    /* General Styles */
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden; /* Avoid scrolling during loading */
+    }
+
+    /* Preloader Styles */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #222;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    #preloader span {
+      font-size: 2em;
+      margin-top: 10px;
+    }
+
+    /* Page Content Styles */
+    #content {
+      display: none; /* Hidden until fully loaded */
+    }
+
+    .section {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      pointer-events: none; /* Disable interaction */
+    }
+  </style>
+</head>
+<body>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div>Loading... <span id="percentage">0%</span></div>
+  </div>
+
+  <!-- Page Content -->
+  <div id="content">
+    <div class="section">Welcome to My Website</div>
+    <div class="section">Scroll Down for Video</div>
+    <div class="video-container">
+      <video id="myVideo" autoplay muted playsinline>
+        <source src="your-video.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+    <div class="section">Thank you for visiting!</div>
+  </div>
+
+  <script>
+    // Preloader Logic
+    const preloader = document.getElementById('preloader');
+    const percentage = document.getElementById('percentage');
+    const content = document.getElementById('content');
+
+    let loadProgress = 0;
+
+    const fakeLoader = setInterval(() => {
+      loadProgress += 5; // Simulate loading progress
+      percentage.textContent = `${loadProgress}%`;
+      if (loadProgress >= 100) {
+        clearInterval(fakeLoader);
+        preloader.style.display = 'none';
+        content.style.display = 'block';
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+      }
+    }, 100);
+
+    // Scroll-triggered Video Play
+    const video = document.getElementById('myVideo');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.5 }); // Trigger when 50% of video is visible
+
+    observer.observe(video);
+  </script>
+</body>
+</html>
